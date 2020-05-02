@@ -24,43 +24,32 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               Container(
-                width: double.infinity,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     SizedBox(
                       height: 16,
                     ),
-                    Stack(
-                      overflow: Overflow.visible,
-                      children: <Widget>[
-                        _buildPortfolioImageContainer(),
-                        Positioned(
-                          bottom: -30,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Android Developer',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                              color: MyColors.headerBg,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                    _buildPortfolioImageContainer(),
+                    SizedBox(height: 16,),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                        child: Text(
+                          'Android  Developer',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
                           ),
-                        )
-                      ],
+                        ),
+                      
+                      decoration: BoxDecoration(
+                        color: MyColors.headerBg,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
                     ),
                     SizedBox(
                       height: 64,

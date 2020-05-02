@@ -15,7 +15,7 @@ class MyStyles {
     );
 
   static TextStyle cardDescTextStyle = GoogleFonts.poppins(
-    fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black87,
+    fontSize: 14,fontWeight: FontWeight.bold,color: Colors.black87,
   );
 
   static BoxDecoration myBoxD({Color bgColor = const Color(0xFFE5EEFD)}) {

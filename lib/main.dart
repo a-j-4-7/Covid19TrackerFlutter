@@ -1,5 +1,6 @@
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/screens/dashboard/dashboard.dart';
+import 'package:covid19_tracker/screens/splash/splashscreen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());

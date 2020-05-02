@@ -169,7 +169,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: Row(
                               children: <Widget>[
                                 for (var symptom in Symptom.getSymptoms())
-                                  SymptomsList(text: symptom.title)
+                                  SymptomPreventionListTile(text: symptom.title,color: Colors.red.shade300,icon:Icons.warning,)
                               ],
                             ),
                           ),
@@ -187,7 +187,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               children: <Widget>[
                                 for (var prevention
                                     in Prevention.getPrevention())
-                                  SymptomsList(text: prevention.title)
+                                  SymptomPreventionListTile(text: prevention.title,color: Colors.yellow.shade600,icon:Icons.beenhere)
                               ],
                             ),
                           ),

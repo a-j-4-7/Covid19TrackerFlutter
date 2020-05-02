@@ -10,7 +10,6 @@ import 'package:covid19_tracker/network/apiserviceimpl.dart';
 import 'package:covid19_tracker/screens/countrylist/countrylisttile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'mytogglebutton.dart';
 
@@ -180,6 +179,7 @@ class _CountryListPageState extends State<CountryListPage> {
                     textEditingController.clear();
                     setState(() {
                       newCountriesFilteredList = newCountriesList;
+                      _isSearchEnabled = !_isSearchEnabled;
                     });
                   },
                   child: Icon(

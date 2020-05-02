@@ -12,12 +12,15 @@ class Symptom{
       List<Symptom> list = [];
       list.add(Symptom(title: "Fever"));
       list.add(Symptom(title: "Cough"));
-      list.add(Symptom(title: "Shortness \nof breath"));
+      list.add(Symptom(title: "Tiredness"));
+      list.add(Symptom(title: "Difficulty \nbreathing"));
+      list.add(Symptom(title: "Runny \nnose"));
       list.add(Symptom(title: "Chills/ \nShaking"));
       list.add(Symptom(title: "Headache"));
       list.add(Symptom(title: "Bodyache"));
-      list.add(Symptom(title: "Sore throat"));
-      list.add(Symptom(title: "Loss of smell and taste"));
+      list.add(Symptom(title: "Sore \nthroat"));
+      list.add(Symptom(title: "Loss of \nsmell"));
+      list.add(Symptom(title: "Loss of \ntaste"));
       return list;
     }
 
