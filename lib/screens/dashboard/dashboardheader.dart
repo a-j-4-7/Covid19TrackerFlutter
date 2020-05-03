@@ -15,7 +15,7 @@ class DashboardHeader extends StatefulWidget {
 }
 
 class _DashboardHeaderState extends State<DashboardHeader> {
-  String _dropDownValue = 'Nepal';
+  String _dropDownValue = 'Select your country';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -88,18 +88,26 @@ class _DashboardHeaderState extends State<DashboardHeader> {
                             fontSize: 24,
                           ),
                         ),
-                        SizedBox(height: 8,),
+                        SizedBox(
+                          height: 8,
+                        ),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16,),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.white24
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
                           ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.white24),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              style: TextStyle(color: Colors.white,),
-                              icon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.white,
+                              ),
                               iconSize: 20,
                               onChanged: (selectedValue) {
                                 setState(() {
@@ -131,7 +139,11 @@ class _DashboardHeaderState extends State<DashboardHeader> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    widget.onCheckYourAreaPressed(_dropDownValue);
+                    if (_dropDownValue == 'Select your country') {
+                      _showSnackbar(context);
+                    } else {
+                      widget.onCheckYourAreaPressed(_dropDownValue);
+                    }
                   },
                   child: Container(
                     width: 72,
@@ -154,5 +166,17 @@ class _DashboardHeaderState extends State<DashboardHeader> {
         ],
       ),
     );
+  }
+
+  void _showSnackbar(BuildContext context) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'ERROR !!! Please select a country first.',
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          color: Colors.white,
+        ),
+      ),
+    ));
   }
 }
