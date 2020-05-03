@@ -268,7 +268,7 @@ class SocialMediaIcon extends StatelessWidget {
       child: Icon(
         icon,
         size: 24,
-        color: Colors.black54,
+        color:Colors.blueGrey.shade700,
       ),
     );
   }

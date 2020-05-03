@@ -1,5 +1,6 @@
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/screens/dashboard/dashboard.dart';
+import 'package:covid19_tracker/screens/main/mainpage.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           scaffoldBackgroundColor: MyColors.appBgColor,
         ),
-        home: DashboardPage(),
+        home: MainPage(),
       ),
     );
   }

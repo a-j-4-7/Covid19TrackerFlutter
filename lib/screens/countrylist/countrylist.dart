@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:covid19_tracker/common/errorplaceholder.dart';
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
@@ -16,9 +14,9 @@ enum SelectedStats { TODAY, TOTAL }
 const COUNTRIES_API_URL = 'https://corona.lmao.ninja/v2/countries?sort=cases';
 
 class CountryListPage extends StatefulWidget {
-  final String _countryName;
+  final String countryName;
 
-  CountryListPage(this._countryName);
+  CountryListPage({this.countryName});
 
   @override
   _CountryListPageState createState() => _CountryListPageState();
@@ -42,6 +40,7 @@ class _CountryListPageState extends State<CountryListPage> {
     final response =
         await http.get(COUNTRIES_API_URL);
     if (response.statusCode == 200) {
+      if(!mounted)return;
       setState(() {
         _isLoading = false;
         newCountriesList = newCountriesFilteredList = jsonDecode(response.body);
@@ -54,7 +53,7 @@ class _CountryListPageState extends State<CountryListPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Passed Data =>" + widget._countryName.toString());
+    print("Passed Data =>" + widget.countryName.toString());
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -77,7 +76,7 @@ class _CountryListPageState extends State<CountryListPage> {
               SizedBox(
                 height: 8,
               ),
-              if (widget._countryName!=null) ...[
+              if (widget.countryName!=null) ...[
                 _getCountryByArea()
               ] else ...[
                 _getAllCountries()
@@ -127,7 +126,7 @@ class _CountryListPageState extends State<CountryListPage> {
           ),
         ),
       ],
-      if(widget._countryName==null)_buildOptionMenu(),
+      if(widget.countryName==null)_buildOptionMenu(),
     ];
   }
 
@@ -282,7 +281,7 @@ class _CountryListPageState extends State<CountryListPage> {
 
   Widget _getCountryByArea() {
     newCountriesFilteredList = newCountriesFilteredList
-        .where((country) => country['country'] == widget._countryName)
+        .where((country) => country['country'] == widget.countryName)
         .toList();
     return Expanded(
       child:  _isLoading

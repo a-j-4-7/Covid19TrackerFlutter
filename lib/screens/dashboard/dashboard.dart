@@ -6,25 +6,26 @@ import 'package:covid19_tracker/data/prevention.dart';
 import 'package:covid19_tracker/data/symptom.dart';
 import 'package:covid19_tracker/network/apiservice.dart';
 import 'package:covid19_tracker/network/apiserviceimpl.dart';
-import 'package:covid19_tracker/screens/about/aboutpage.dart';
-import 'package:covid19_tracker/screens/countrylist/countrylist.dart';
 import 'package:covid19_tracker/screens/dashboard/dashboardheader.dart';
 import 'package:covid19_tracker/screens/dashboard/symptomslist.dart';
 import 'package:covid19_tracker/screens/dashboard/worldwidecountgridview.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatefulWidget {
+
+  final Function(String) onAreaSelectedCallback;
+
+  const DashboardPage({Key key, @required this.onAreaSelectedCallback}) : super(key: key);
+
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  double _height, _width;
-  int currentBottomBarIndex = 0;
-  String filteredArea;
-  String _dropdownValue;
+
+
 
   @override
   void initState() {
@@ -33,66 +34,86 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    _height = MediaQuery.of(context).size.height;
-    _width = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
-          bottomNavigationBar: BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            notchMargin: 8.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          body:  Container(
+          constraints: BoxConstraints.expand(),
+          child: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                GestureDetector(
-                  child: BottomNavItem(
-                    icon: Icons.dashboard,
-                    indicatorColor: currentBottomBarIndex == 0
-                        ? MyColors.headerBg
-                        : Colors.transparent,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      currentBottomBarIndex = 0;
-                      filteredArea = null;
-                    });
+                DashboardHeader(
+                  onCheckYourAreaPressed: (selectedArea) {
+                    setState(
+                      () {
+                        print('clicked');
+                        print('Selected Area =>' + selectedArea);
+                        widget.onAreaSelectedCallback(selectedArea);
+                      },
+                    );
                   },
                 ),
-                GestureDetector(
-                  child: BottomNavItem(
-                    icon: Icons.map,
-                    indicatorColor: currentBottomBarIndex == 1
-                        ? MyColors.headerBg
-                        : Colors.transparent,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      currentBottomBarIndex = 1;
-                    });
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => CountryListPage(null)));
-                  },
+                SizedBox(
+                  height: 24,
                 ),
-                GestureDetector(
-                  child: BottomNavItem(
-                    icon: Icons.info,
-                    indicatorColor: currentBottomBarIndex == 2
-                        ? MyColors.headerBg
-                        : Colors.transparent,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      currentBottomBarIndex = 2;
-                      filteredArea = null;
-                    });
-                  },
+                _buildSectionTitle('Worldwide Counter'),
+                _buildWorldwideCounterGrid(),
+                _buildSectionTitle('Symptoms'),
+                _buildSymptomsLayout(),
+                SizedBox(
+                  height: 16,
+                ),
+                _buildSectionTitle('Prevention'),
+                _buildPreventionLayout(),
+                SizedBox(
+                  height: 36,
                 ),
               ],
             ),
           ),
-          body: _switchPages(currentBottomBarIndex)),
+        ),
+      ),
     );
+  
+  }
+
+  Padding _buildPreventionLayout() {
+    return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      for (var prevention in Prevention.getPrevention())
+                        SymptomPreventionListTile(
+                            text: prevention.title,
+                            color: Colors.yellow.shade600,
+                            icon: Icons.beenhere)
+                    ],
+                  ),
+                ),
+              );
+  }
+
+  Padding _buildSymptomsLayout() {
+    return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      for (var symptom in Symptom.getSymptoms())
+                        SymptomPreventionListTile(
+                          text: symptom.title,
+                          color: Colors.red.shade300,
+                          icon: Icons.warning,
+                        )
+                    ],
+                  ),
+                ),
+              );
   }
 
   Container _buildSectionTitle(String title) {
@@ -138,116 +159,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _switchPages(int index) {
-    switch (index) {
-      case 0:
-        return Container(
-          constraints: BoxConstraints.expand(),
-          child: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                DashboardHeader(
-                  onCheckYourAreaPressed: (selectedArea) {
-                    setState(
-                      () {
-                        print('clicked');
-                        print('Selected Area =>' + selectedArea);
-                        currentBottomBarIndex = 1;
-                        filteredArea = selectedArea;
-                      },
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: 24,
-                ),
-                _buildSectionTitle('Worldwide Counter'),
-                _buildWorldwideCounterGrid(),
-                _buildSectionTitle('Symptoms'),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: <Widget>[
-                        for (var symptom in Symptom.getSymptoms())
-                          SymptomPreventionListTile(
-                            text: symptom.title,
-                            color: Colors.red.shade300,
-                            icon: Icons.warning,
-                          )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                _buildSectionTitle('Prevention'),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: <Widget>[
-                        for (var prevention in Prevention.getPrevention())
-                          SymptomPreventionListTile(
-                              text: prevention.title,
-                              color: Colors.yellow.shade600,
-                              icon: Icons.beenhere)
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 36,
-                ),
-              ],
-            ),
-          ),
-        );
-        break;
-      case 1:
-        return CountryListPage(filteredArea);
-      case 2:
-        return AboutPage();
-        break;
-    }
-  }
+  
 }
 
-class BottomNavItem extends StatelessWidget {
-  final IconData icon;
-  final Color indicatorColor;
 
-  const BottomNavItem({@required this.icon, @required this.indicatorColor});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(
-            icon,
-            color: Colors.grey.shade600,
-          ),
-          SizedBox(
-            height: 6,
-          ),
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: indicatorColor,
-              shape: BoxShape.circle,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
