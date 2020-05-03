@@ -1,5 +1,4 @@
 
-import 'package:covid19_tracker/data/country.dart';
 import 'package:covid19_tracker/data/dashboardcount.dart';
 import 'package:covid19_tracker/network/apiservice.dart';
 import 'package:http/http.dart' as http;

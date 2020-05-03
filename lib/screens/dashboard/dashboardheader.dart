@@ -1,15 +1,21 @@
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
-import 'package:covid19_tracker/screens/countrylist/countrylist.dart';
+import 'package:covid19_tracker/data/countrydropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DashboardHeader extends StatelessWidget {
-  final VoidCallback onPressed;
+class DashboardHeader extends StatefulWidget {
+  final Function(String) onCheckYourAreaPressed;
 
-  const DashboardHeader({Key key, @required this.onPressed}) : super(key: key);
+  const DashboardHeader({Key key, @required this.onCheckYourAreaPressed})
+      : super(key: key);
 
+  @override
+  _DashboardHeaderState createState() => _DashboardHeaderState();
+}
+
+class _DashboardHeaderState extends State<DashboardHeader> {
+  String _dropDownValue = 'Nepal';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,7 +65,7 @@ class DashboardHeader extends StatelessWidget {
             height: 16,
           ),
           Container(
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(24),
@@ -67,63 +73,76 @@ class DashboardHeader extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(16)),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              'assets/nepal.svg',
-                              height: 16,
-                              width: 16,
-                            ),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              'Nepal',
-                              style: GoogleFonts.montserrat(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            )
-                          ],
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          'Check Area Stats',
+                          softWrap: true,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 24,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Check Area Stats',
-                        softWrap: true,
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24,
+                        SizedBox(height: 8,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16,),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white24
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              isExpanded: true,
+                              style: TextStyle(color: Colors.white,),
+                              icon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+                              iconSize: 20,
+                              onChanged: (selectedValue) {
+                                setState(() {
+                                  _dropDownValue = selectedValue;
+                                });
+                              },
+                              items: CountryDropdown.getCountryDropdownList
+                                  .map((country) => DropdownMenuItem<String>(
+                                        child: Text(
+                                          country,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        value: country,
+                                      ))
+                                  .toList(),
+                              value: _dropDownValue,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: onPressed,
-                    child: Container(
-                      height: 72,
-                      decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Center(
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 36,
-                          color: Colors.white,
-                        ),
+                SizedBox(
+                  width: 16,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    widget.onCheckYourAreaPressed(_dropDownValue);
+                  },
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Center(
+                      child: Icon(
+                        Icons.arrow_forward,
+                        size: 36,
+                        color: Colors.white,
                       ),
                     ),
                   ),

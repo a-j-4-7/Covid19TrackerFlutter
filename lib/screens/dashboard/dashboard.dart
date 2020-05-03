@@ -24,6 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
   double _height, _width;
   int currentBottomBarIndex = 0;
   String filteredArea;
+  String _dropdownValue;
 
   @override
   void initState() {
@@ -66,7 +67,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   onTap: () {
                     setState(() {
                       currentBottomBarIndex = 1;
-                    
                     });
                     // Navigator.push(
                     //     context,
@@ -91,7 +91,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
-          body:_switchPages(currentBottomBarIndex)),
+          body: _switchPages(currentBottomBarIndex)),
     );
   }
 
@@ -138,78 +138,85 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _switchPages(int index){
-  switch(index){
-    case 0: 
-    return  Container(
-                  constraints: BoxConstraints.expand(),
+  Widget _switchPages(int index) {
+    switch (index) {
+      case 0:
+        return Container(
+          constraints: BoxConstraints.expand(),
+          child: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                DashboardHeader(
+                  onCheckYourAreaPressed: (selectedArea) {
+                    setState(
+                      () {
+                        print('clicked');
+                        print('Selected Area =>' + selectedArea);
+                        currentBottomBarIndex = 1;
+                        filteredArea = selectedArea;
+                      },
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 24,
+                ),
+                _buildSectionTitle('Worldwide Counter'),
+                _buildWorldwideCounterGrid(),
+                _buildSectionTitle('Symptoms'),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: SingleChildScrollView(
-                    physics: ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
                       children: <Widget>[
-                        DashboardHeader(onPressed: (){
-                          setState(() {
-                            print('clicked');
-                            currentBottomBarIndex = 1;
-                            filteredArea = 'Nepal';
-                          });
-                        },),
-                        SizedBox(
-                          height: 24,
-                        ),
-                        _buildSectionTitle('Worldwide Counter'),
-                        _buildWorldwideCounterGrid(),
-                        _buildSectionTitle('Symptoms'),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: <Widget>[
-                                for (var symptom in Symptom.getSymptoms())
-                                  SymptomPreventionListTile(text: symptom.title,color: Colors.red.shade300,icon:Icons.warning,)
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        _buildSectionTitle('Prevention'),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: <Widget>[
-                                for (var prevention
-                                    in Prevention.getPrevention())
-                                  SymptomPreventionListTile(text: prevention.title,color: Colors.yellow.shade600,icon:Icons.beenhere)
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 36,
-                        ),
+                        for (var symptom in Symptom.getSymptoms())
+                          SymptomPreventionListTile(
+                            text: symptom.title,
+                            color: Colors.red.shade300,
+                            icon: Icons.warning,
+                          )
                       ],
                     ),
                   ),
-                );
-    break;
-    case 1:
-    return CountryListPage(filteredArea);
-    case 2:
-    return AboutPage();
-    break;
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                _buildSectionTitle('Prevention'),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: <Widget>[
+                        for (var prevention in Prevention.getPrevention())
+                          SymptomPreventionListTile(
+                              text: prevention.title,
+                              color: Colors.yellow.shade600,
+                              icon: Icons.beenhere)
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 36,
+                ),
+              ],
+            ),
+          ),
+        );
+        break;
+      case 1:
+        return CountryListPage(filteredArea);
+      case 2:
+        return AboutPage();
+        break;
+    }
   }
 }
-
-}
-
 
 class BottomNavItem extends StatelessWidget {
   final IconData icon;

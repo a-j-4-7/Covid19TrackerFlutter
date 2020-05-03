@@ -1,9 +1,7 @@
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
-import 'package:covid19_tracker/data/country.dart';
 import 'package:covid19_tracker/data/countryDTO.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CountryListTile extends StatelessWidget {
   final CountryDTO country;

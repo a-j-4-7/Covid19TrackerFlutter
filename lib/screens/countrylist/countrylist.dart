@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:covid19_tracker/common/errorplaceholder.dart';
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
-import 'package:covid19_tracker/data/country.dart';
 import 'package:covid19_tracker/data/countryDTO.dart';
-import 'package:covid19_tracker/network/apiservice.dart';
-import 'package:covid19_tracker/network/apiserviceimpl.dart';
 import 'package:covid19_tracker/screens/countrylist/countrylisttile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +77,7 @@ class _CountryListPageState extends State<CountryListPage> {
               SizedBox(
                 height: 8,
               ),
-              if (widget._countryName == 'Nepal') ...[
+              if (widget._countryName!=null) ...[
                 _getCountryByArea()
               ] else ...[
                 _getAllCountries()
@@ -120,41 +118,7 @@ class _CountryListPageState extends State<CountryListPage> {
   List<Widget> _buildCustomAppBar(BuildContext context) {
     return <Widget>[
       if (_isSearchEnabled) ...[
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 24,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: TextField(
-              controller: textEditingController,
-              onChanged: (onChangedValue) {
-                print("onChangedVlaue =>" + onChangedValue.toString());
-                print("HERE =>" + newCountriesFilteredList.toString());
-                setState(() {
-                  var list = newCountriesList
-                      .where((country) => country['country']
-                          .toLowerCase()
-                          .contains(onChangedValue))
-                      .toList();
-                  print("Filtered LIst =>" + list.toString());
-                  newCountriesFilteredList = list;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Type Country Name',
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.black87,
-                ),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ),
+        _buildCountrySearchView(),
       ] else ...[
         Expanded(
           child: Text(
@@ -163,44 +127,86 @@ class _CountryListPageState extends State<CountryListPage> {
           ),
         ),
       ],
-      GestureDetector(
-        onTap: () {
-          setState(() {
-            _isSearchEnabled = !_isSearchEnabled;
-          });
-        },
-        child: _isSearchEnabled
-            ? Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    textEditingController.clear();
-                    setState(() {
-                      newCountriesFilteredList = newCountriesList;
-                      _isSearchEnabled = !_isSearchEnabled;
-                    });
-                  },
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.black87,
-                    size: 32,
-                  ),
-                ),
-              )
-            : Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
+      if(widget._countryName==null)_buildOptionMenu(),
+    ];
+  }
+
+  Expanded _buildCountrySearchView() {
+    return Expanded(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 24,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: TextField(
+            controller: textEditingController,
+            onChanged: (onChangedValue) {
+              print("onChangedVlaue =>" + onChangedValue.toString());
+              print("HERE =>" + newCountriesFilteredList.toString());
+              setState(() {
+                var list = newCountriesList
+                    .where((country) => country['country']
+                        .toLowerCase()
+                        .contains(onChangedValue))
+                    .toList();
+                print("Filtered LIst =>" + list.toString());
+                newCountriesFilteredList = list;
+              });
+            },
+            decoration: InputDecoration(
+              hintText: 'Type Country Name',
+              icon: Icon(
+                Icons.search,
+                color: Colors.black87,
+              ),
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      );
+  }
+
+  GestureDetector _buildOptionMenu() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isSearchEnabled = !_isSearchEnabled;
+        });
+      },
+      child: _isSearchEnabled
+          ? Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  textEditingController.clear();
+                  setState(() {
+                    newCountriesFilteredList = newCountriesList;
+                    _isSearchEnabled = !_isSearchEnabled;
+                  });
+                },
                 child: Icon(
-                  Icons.search,
+                  Icons.close,
                   color: Colors.black87,
                   size: 32,
                 ),
               ),
-      ),
-    ];
+            )
+          : Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: Icon(
+                Icons.search,
+                color: Colors.black87,
+                size: 32,
+              ),
+            ),
+    );
   }
 
   Container _buildStatsToggleLayout() {
@@ -248,6 +254,7 @@ class _CountryListPageState extends State<CountryListPage> {
     return Expanded(
       child: _isLoading
           ? Center(child: CircularProgressIndicator(),)
+          : newCountriesFilteredList.length==0 ? ErrorPlaceholder(errorMsg: 'No data found.', iconData: Icons.warning)
           : ListView.builder(
               shrinkWrap: true,
               itemCount: newCountriesFilteredList.length,
@@ -275,12 +282,13 @@ class _CountryListPageState extends State<CountryListPage> {
 
   Widget _getCountryByArea() {
     newCountriesFilteredList = newCountriesFilteredList
-        .where((country) => country['country'] == 'Nepal')
+        .where((country) => country['country'] == widget._countryName)
         .toList();
     return Expanded(
       child:  _isLoading
           ? Center(child: CircularProgressIndicator(),)
-          : ListView.builder(
+          : newCountriesFilteredList.length==0 ? ErrorPlaceholder(errorMsg: 'No data found',iconData: Icons.warning,)
+           : ListView.builder(
               shrinkWrap: true,
               itemCount: newCountriesFilteredList.length,
               itemBuilder: (context, index) {
@@ -306,35 +314,7 @@ class _CountryListPageState extends State<CountryListPage> {
   }
 }
 
-class NetworkErrorPlaceholder extends StatelessWidget {
-  const NetworkErrorPlaceholder({
-    Key key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Icon(
-          Icons.error,
-          size: 96,
-          color: Colors.red.shade500,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-          'OOOPS !!! \nSomething went wrong.',
-          textAlign: TextAlign.center,
-          style: MyStyles.headerTextStyle
-              .copyWith(fontSize: 24, color: MyColors.headerBg),
-        ),
-      ],
-    ));
-  }
-}
 
 Container _buildColorInfoItem(
     {@required Color textColor, @required String title}) {
