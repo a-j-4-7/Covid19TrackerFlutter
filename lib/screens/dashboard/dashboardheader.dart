@@ -71,6 +71,7 @@ class _DashboardHeaderState extends State<DashboardHeader> {
               borderRadius: BorderRadius.circular(24),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Expanded(
                   child: Container(
