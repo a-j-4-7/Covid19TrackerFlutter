@@ -192,7 +192,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Align(
             alignment: Alignment.center,
             child: Container(
-              height: 60,width: 60,
+              height: 50,width: 50,
               decoration: MyStyles.myBoxD(),
             ),
           )
