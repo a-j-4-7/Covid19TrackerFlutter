@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class WorldwideCountGridTile extends StatelessWidget {
   final String title;
-  final String number;
+  final int number;
   final Color textColor;
   final Color bgColor;
 
@@ -58,7 +58,7 @@ class WorldwideCountGridTile extends StatelessWidget {
                 height: 4,
               ),
               Text(
-                number,
+                number.toString(),
                 style: MyStyles.headerTextStyle
                     .copyWith(color: textColor, fontSize: 30),
               ),

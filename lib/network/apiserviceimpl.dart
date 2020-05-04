@@ -23,10 +23,10 @@ class ApiServiceImpl implements ApiService{
       final totalActive = jsonResponse['active'];
 
       DashboardCount dashboardCount = DashboardCount(
-        totalConfirmedCasesCount: totalCases.toString(),
-        totalActiveCasesCount: totalActive.toString(),
-        totalDeathCount: totalDeaths.toString(),
-        totalRecoveredCasesCount: totalRecovered.toString()
+        totalConfirmedCasesCount: totalCases,
+        totalActiveCasesCount: totalActive,
+        totalDeathCount: totalDeaths,
+        totalRecoveredCasesCount: totalRecovered
       );
       return dashboardCount;
     } else {

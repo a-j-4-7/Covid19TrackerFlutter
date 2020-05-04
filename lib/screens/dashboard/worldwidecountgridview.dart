@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class WorldwideCountGridView extends StatelessWidget {
 
-  final String totalCases;
-  final String activeCases;
-  final String deaths;
-  final String recoveredCases;
+  final int totalCases;
+  final int activeCases;
+  final int deaths;
+  final int recoveredCases;
 
   const WorldwideCountGridView({Key key,
     @required this.totalCases,
