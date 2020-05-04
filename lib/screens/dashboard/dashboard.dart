@@ -192,7 +192,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Align(
             alignment: Alignment.center,
             child: Container(
-              height: 50,width: 50,
+              height: 60,width: 60,
               decoration: MyStyles.myBoxD(),
             ),
           )
@@ -204,14 +204,14 @@ class _DashboardPageState extends State<DashboardPage> {
   void _buildPieChartSeriesList(DashboardCount dashboardCount) {
     final pieData = [
       WorldwideStatsPieChartModel(
-          title: 'CONFIRMED',
+          title: 'Confirmed',
           number: dashboardCount.getTotalConfirmedCasesCount),
       WorldwideStatsPieChartModel(
-          title: 'ACTIVE', number: dashboardCount.getTotalActiveCasesCount),
+          title: 'Active', number: dashboardCount.getTotalActiveCasesCount),
       WorldwideStatsPieChartModel(
-          title: 'DEATHS', number: dashboardCount.getTotalDeathCount),
+          title: 'Deaths', number: dashboardCount.getTotalDeathCount),
       WorldwideStatsPieChartModel(
-          title: 'RECOVERED', number: dashboardCount.getTotalRecoverdCount),
+          title: 'Recovered', number: dashboardCount.getTotalRecoverdCount),
     ];
 
     _seriesList = [
@@ -226,16 +226,16 @@ class _DashboardPageState extends State<DashboardPage> {
         // },
         colorFn: (WorldwideStatsPieChartModel index, _) {
           switch (index.title) {
-            case 'DEATHS':
+            case 'Deaths':
               return charts.MaterialPalette.red.shadeDefault;
               break;
-            case 'ACTIVE':
+            case 'Active':
               return charts.MaterialPalette.yellow.shadeDefault;
               break;
-            case 'CONFIRMED':
+            case 'Confirmed':
               return charts.MaterialPalette.indigo.shadeDefault;
               break;
-            case 'RECOVERED':
+            case 'Recovered':
               return charts.MaterialPalette.green.shadeDefault;
               break;
             default:
