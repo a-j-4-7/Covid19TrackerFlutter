@@ -204,14 +204,14 @@ class _DashboardPageState extends State<DashboardPage> {
   void _buildPieChartSeriesList(DashboardCount dashboardCount) {
     final pieData = [
       WorldwideStatsPieChartModel(
-          title: 'Confirmed',
+          title: 'CONFIRMED',
           number: dashboardCount.getTotalConfirmedCasesCount),
       WorldwideStatsPieChartModel(
-          title: 'Active', number: dashboardCount.getTotalActiveCasesCount),
+          title: 'ACTIVE', number: dashboardCount.getTotalActiveCasesCount),
       WorldwideStatsPieChartModel(
-          title: 'Deaths', number: dashboardCount.getTotalDeathCount),
+          title: 'DEATHS', number: dashboardCount.getTotalDeathCount),
       WorldwideStatsPieChartModel(
-          title: 'Recovered', number: dashboardCount.getTotalRecoverdCount),
+          title: 'RECOVERED', number: dashboardCount.getTotalRecoverdCount),
     ];
 
     _seriesList = [
@@ -226,16 +226,16 @@ class _DashboardPageState extends State<DashboardPage> {
         // },
         colorFn: (WorldwideStatsPieChartModel index, _) {
           switch (index.title) {
-            case 'Deaths':
+            case 'DEATHS':
               return charts.MaterialPalette.red.shadeDefault;
               break;
-            case 'Active':
+            case 'ACTIVE':
               return charts.MaterialPalette.yellow.shadeDefault;
               break;
-            case 'Confirmed':
+            case 'CONFIRMED':
               return charts.MaterialPalette.indigo.shadeDefault;
               break;
-            case 'Recovered':
+            case 'RECOVERED':
               return charts.MaterialPalette.green.shadeDefault;
               break;
             default:
