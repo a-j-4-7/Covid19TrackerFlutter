@@ -81,7 +81,7 @@ class _NewsPageState extends State<NewsPage> {
                 )
               ] else ...[
                 Expanded(
-                    child: newsMap != null
+                    child: listOfNews.length > 0
                         ? _buildNewsListView()
                         : Center(
                             child: ErrorPlaceholder(
@@ -110,66 +110,67 @@ class _NewsPageState extends State<NewsPage> {
           isLoading = false;
           newsMap = jsonDecode(response.body);
           print('NEWS MAP =>' + newsMap.toString());
-          var status = newsMap['status'];
-          if (status.toString() == 'error') isLastPageReached = true;
-          var totalResults = newsMap['totalResults'];
-          print('NEWS MAP =>' + status.toString());
-          print('NEWS MAP =>' + totalResults.toString());
+          if (newsMap['status'].toString() == 'error') isLastPageReached = true;
+          _buildListOfNews(newsMap);
         });
         return;
       }
-      isLastPageReached = true;
+      setState(() {
+        isLastPageReached = true;
+      });
       throw Exception('HTTP ERROR');
     } catch (exception) {
       print('EXCEPTIONNNNNNNNNNNNNNNNNNN' + exception.toString());
     }
     /* finally {
-      setState(() {
-        isLoading = false;
-      });
-    } */
+                setState(() {
+                  isLoading = false;
+                });
+              } */
   }
 
   Widget _buildNewsListView() {
-    /*  var status = newsMap['status'];
-    if (status.toString() == 'error')isLastPageReached = true;
-    var totalResults = newsMap['totalResults'];
-    print('NEWS MAP =>' + status.toString());
-    print('NEWS MAP =>' + totalResults.toString()); */
+    return ListView.builder(
+        itemCount: listOfNews.length + 1,
+        shrinkWrap: true,
+        controller: _scrollController,
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (ctx, index) {
+          if (index == listOfNews.length) {
+           return !isLastPageReached ? Center(child: CircularProgressIndicator()) : SizedBox();
+          } else {
+            return NewsListTile(
+              newsItem: listOfNews[index],
+              onNewsItemPressed: (newsUrl) {
+                print("==========URL=======" + newsUrl);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NewsDetailPage(
+                            newsUrl: newsUrl,
+                          )),
+                );
+              },
+            );
+          }
+        });
+  }
 
+  void _buildListOfNews(Map newsMap) {
     List articleList = newsMap['articles'] as List;
 
-    listOfNews.addAll(articleList
-        .map((article) => NewsDTO(
-            source: article['source']['name'],
-            title: article['title'],
-            description: article['description'],
-            url: article['url'],
-            urlToImage: article['urlToImage'],
-            publishedAt: article['publishedAt']))
-        .toList());
-
-    print(articleList.toString());
-    print(articleList.length.toString());
+    if (articleList.length > 0) {
+      listOfNews.addAll(articleList
+          .map((article) => NewsDTO(
+              source: article['source']['name'],
+              title: article['title'],
+              description: article['description'],
+              url: article['url'],
+              urlToImage: article['urlToImage'],
+              publishedAt: article['publishedAt']))
+          .toList());
+    }
+    print('UNMAPPED LIST SIZE =>' + articleList.toString());
     print('MAPPED LIST SIZE =>' + listOfNews.length.toString());
-    return ListView.builder(
-      itemCount: listOfNews.length,
-      shrinkWrap: true,
-      controller: _scrollController,
-      physics: BouncingScrollPhysics(),
-      itemBuilder: (ctx, index) => NewsListTile(
-        newsItem: listOfNews[index],
-        onNewsItemPressed: (newsUrl) {
-          print("==========URL=======" + newsUrl);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NewsDetailPage(
-                      newsUrl: newsUrl,
-                    )),
-          );
-        },
-      ),
-    );
   }
 }
