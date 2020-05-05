@@ -129,7 +129,7 @@ class AboutPage extends StatelessWidget {
       ),
       child: ClipOval(
         child: Image.asset(
-          'assets/pp.jpg',
+          'assets/pp2.jpg',
           fit: BoxFit.fill,
           width: 172,
           height: 172,
@@ -163,7 +163,7 @@ class AboutPage extends StatelessWidget {
     return Column(
       children: <Widget>[
         Text(
-          'Sachet Tha Shrestha',
+          'Aries Shrestha',
           style: MyStyles.headerTextStyle.copyWith(
             fontSize: 30,
             color: Colors.black87,
@@ -189,7 +189,7 @@ class AboutPage extends StatelessWidget {
               width: 4,
             ),
             Text(
-              'Bhaktapur',
+              'Kathmandu',
               style: GoogleFonts.montserrat(
                 fontSize: 18,
                 color: Colors.black87,
@@ -218,7 +218,7 @@ class AboutPage extends StatelessWidget {
               width: 4,
             ),
             Text(
-              '9840052922',
+              '9828812456',
               style: GoogleFonts.montserrat(
                 fontSize: 18,
                 color: Colors.black87,
