@@ -36,6 +36,7 @@ class _NewsPageState extends State<NewsPage> {
     try {
       var response = await http.get(url);
       if (response.statusCode == 200) {
+        if(!mounted)return;
         setState(() {
           newsMap = jsonDecode(response.body);
           print('NEWS MAP =>' + newsMap.toString());
