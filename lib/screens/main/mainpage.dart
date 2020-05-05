@@ -4,6 +4,7 @@ import 'package:covid19_tracker/screens/countrylist/countrylist.dart';
 import 'package:covid19_tracker/screens/dashboard/dashboard.dart';
 import 'package:covid19_tracker/screens/news/news.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -44,16 +45,30 @@ class _MainPageState extends State<MainPage>
           indicatorWeight: 4,
           tabs: <Widget>[
             BottomNavItem(
-              icon: Icons.dashboard,
+              icon: Icon(
+                Icons.dashboard,
+                color: Colors.blueGrey.shade700,
+              ),
             ),
             BottomNavItem(
-              icon: Icons.public,
+              icon: Icon(
+                Icons.public,
+                color: Colors.blueGrey.shade700,
+              ),
             ),
             BottomNavItem(
-              icon: Icons.message,
+              icon: SvgPicture.asset(
+                'assets/news.svg',
+                color: Colors.blueGrey.shade700,
+                height: 20,
+                width: 20,
+              ),
             ),
-             BottomNavItem(
-              icon: Icons.person_pin,
+            BottomNavItem(
+              icon: Icon(
+                Icons.person_pin,
+                color: Colors.blueGrey.shade700,
+              ),
             ),
           ],
           controller: _tabController,
@@ -82,7 +97,7 @@ class _MainPageState extends State<MainPage>
 }
 
 class BottomNavItem extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
 
   const BottomNavItem({@required this.icon});
 
@@ -93,10 +108,7 @@ class BottomNavItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(
-            icon,
-            color: Colors.blueGrey.shade700,
-          ),
+          icon,
           SizedBox(
             height: 6,
           ),
