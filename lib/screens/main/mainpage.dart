@@ -2,7 +2,9 @@ import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/screens/about/aboutpage.dart';
 import 'package:covid19_tracker/screens/countrylist/countrylist.dart';
 import 'package:covid19_tracker/screens/dashboard/dashboard.dart';
+import 'package:covid19_tracker/screens/news/news.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -18,7 +20,7 @@ class _MainPageState extends State<MainPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {
         tabIndex = _tabController.index;
@@ -43,17 +45,31 @@ class _MainPageState extends State<MainPage>
           indicatorWeight: 4,
           tabs: <Widget>[
             BottomNavItem(
-                icon: Icons.dashboard,
-                indicatorColor:
-                    tabIndex == 0 ? MyColors.headerBg : Colors.transparent),
+              icon: Icon(
+                Icons.dashboard,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
             BottomNavItem(
-                icon: Icons.map,
-                indicatorColor:
-                    tabIndex == 1 ? MyColors.headerBg : Colors.transparent),
+              icon: Icon(
+                Icons.public,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
             BottomNavItem(
-                icon: Icons.info,
-                indicatorColor:
-                    tabIndex == 2 ? MyColors.headerBg : Colors.transparent),
+              icon: SvgPicture.asset(
+                'assets/news.svg',
+                color: Colors.blueGrey.shade700,
+                height: 20,
+                width: 20,
+              ),
+            ),
+            BottomNavItem(
+              icon: Icon(
+                Icons.person_pin,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
           ],
           controller: _tabController,
         ),
@@ -69,9 +85,10 @@ class _MainPageState extends State<MainPage>
               });
             },
           ),
-            CountryListPage(
-              countryName: _selectedArea,
-            ),
+          CountryListPage(
+            countryName: _selectedArea,
+          ),
+          NewsPage(),
           AboutPage(),
         ],
       ),
@@ -80,10 +97,9 @@ class _MainPageState extends State<MainPage>
 }
 
 class BottomNavItem extends StatelessWidget {
-  final IconData icon;
-  final Color indicatorColor;
+  final Widget icon;
 
-  const BottomNavItem({@required this.icon, @required this.indicatorColor});
+  const BottomNavItem({@required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -92,14 +108,10 @@ class BottomNavItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(
-            icon,
-            color: Colors.blueGrey.shade700,
-          ),
+          icon,
           SizedBox(
             height: 6,
           ),
-         
         ],
       ),
     );
