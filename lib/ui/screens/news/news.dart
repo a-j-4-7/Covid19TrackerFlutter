@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:covid19_tracker/common/errorplaceholder.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
 import 'package:covid19_tracker/data/newsDTO.dart';
-import 'package:covid19_tracker/screens/news/news_list_tile.dart';
-import 'package:covid19_tracker/screens/news_detail/news_detail.dart';
+import 'package:covid19_tracker/ui/common_widgets/errorplaceholder.dart';
+import 'package:covid19_tracker/ui/screens/news/news_list_tile.dart';
+import 'package:covid19_tracker/ui/screens/news_detail/news_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';

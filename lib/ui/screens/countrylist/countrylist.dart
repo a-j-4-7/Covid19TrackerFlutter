@@ -1,11 +1,13 @@
 import 'dart:convert';
-import 'package:covid19_tracker/common/errorplaceholder.dart';
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
 import 'package:covid19_tracker/data/countryDTO.dart';
-import 'package:covid19_tracker/screens/countrylist/countrylisttile.dart';
+import 'package:covid19_tracker/myservices/apiservice.dart';
+import 'package:covid19_tracker/ui/common_widgets/errorplaceholder.dart';
+import 'package:covid19_tracker/ui/screens/countrylist/countrylisttile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:covid19_tracker/myservices/apiserviceimpl.dart';
 import 'package:http/http.dart' as http;
 import 'mytogglebutton.dart';
 
@@ -37,7 +39,7 @@ class _CountryListPageState extends State<CountryListPage> {
   }
 
   fetchCountryStats() async {
-    final response =
+  /*  final response =
         await http.get(COUNTRIES_API_URL);
     if (response.statusCode == 200) {
       if(!mounted)return;
@@ -47,8 +49,14 @@ class _CountryListPageState extends State<CountryListPage> {
       });
     } else {
        throw Exception('IO Error');
-    }
-    
+    }*/
+
+  ApiService apiService = ApiServiceImpl();
+  try {
+    Future<List<CountryDTO>> fetchCountries = apiService.fetchCountries();
+  } catch (e) {
+    print('ERROR AAAYYYO => ${e.toString()}');
+  }
   }
 
   @override

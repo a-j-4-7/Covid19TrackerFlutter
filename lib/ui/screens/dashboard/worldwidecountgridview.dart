@@ -1,4 +1,4 @@
-import 'package:covid19_tracker/screens/dashboard/worlwidecountgridtile.dart';
+import 'package:covid19_tracker/ui/screens/dashboard/worlwidecountgridtile.dart';
 import 'package:flutter/material.dart';
 
 class WorldwideCountGridView extends StatelessWidget {
