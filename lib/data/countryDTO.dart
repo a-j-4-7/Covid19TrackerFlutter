@@ -42,11 +42,11 @@ class CountryDTO {
     return CountryDTO(
       imageUrl: json['countryInfo']['flag'],
       countryName: json['country'],
-      active: json['active'],
-      recovered: json['recovered'],
-      deaths: json['deaths'],
-      todayCases: json['todayCases'],
-      todayDeaths: json['todayDeaths']
+      active: json['active'].toString(),
+      recovered: json['recovered'].toString(),
+      deaths: json['deaths'].toString(),
+      todayCases: json['todayCases'].toString(),
+      todayDeaths: json['todayDeaths'].toString()
     );
   }
 }

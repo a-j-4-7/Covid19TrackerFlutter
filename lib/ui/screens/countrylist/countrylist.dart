@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
 import 'package:covid19_tracker/data/countryDTO.dart';
-import 'package:covid19_tracker/myservices/apiservice.dart';
+import 'package:covid19_tracker/services/apiservice.dart';
+import 'package:covid19_tracker/services/apiserviceimpl.dart';
 import 'package:covid19_tracker/ui/common_widgets/errorplaceholder.dart';
 import 'package:covid19_tracker/ui/screens/countrylist/countrylisttile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:covid19_tracker/myservices/apiserviceimpl.dart';
 import 'package:http/http.dart' as http;
 import 'mytogglebutton.dart';
 
@@ -29,34 +29,31 @@ class _CountryListPageState extends State<CountryListPage> {
   bool _isSearchEnabled = false;
   bool _isLoading = true;
   final TextEditingController textEditingController = TextEditingController();
-  List newCountriesList = [];
-  List newCountriesFilteredList = [];
+  List<CountryDTO> newCountriesList = [];
+  List<CountryDTO> newCountriesFilteredList = [];
 
   @override
   void initState() {
     super.initState();
-    fetchCountryStats();
+    _fetchCountryStats();
   }
 
-  fetchCountryStats() async {
-  /*  final response =
-        await http.get(COUNTRIES_API_URL);
-    if (response.statusCode == 200) {
+  _fetchCountryStats() async {
+    ApiService apiService = ApiServiceImpl();
+    try {
+      List<CountryDTO> result = await apiService.fetchCountries();
+      if (!mounted) return;
+      setState(() {
+        newCountriesList = newCountriesFilteredList = result;
+      });
+    } catch (e) {
+      print('ERROR AAAYYYO => $e');
+    } finally {
       if(!mounted)return;
       setState(() {
         _isLoading = false;
-        newCountriesList = newCountriesFilteredList = jsonDecode(response.body);
       });
-    } else {
-       throw Exception('IO Error');
-    }*/
-
-  ApiService apiService = ApiServiceImpl();
-  try {
-    Future<List<CountryDTO>> fetchCountries = apiService.fetchCountries();
-  } catch (e) {
-    print('ERROR AAAYYYO => ${e.toString()}');
-  }
+    }
   }
 
   @override
@@ -84,7 +81,7 @@ class _CountryListPageState extends State<CountryListPage> {
               SizedBox(
                 height: 8,
               ),
-              if (widget.countryName!=null) ...[
+              if (widget.countryName != null) ...[
                 _getCountryByArea()
               ] else ...[
                 _getAllCountries()
@@ -134,46 +131,46 @@ class _CountryListPageState extends State<CountryListPage> {
           ),
         ),
       ],
-      if(widget.countryName==null)_buildOptionMenu(),
+      if (widget.countryName == null) _buildOptionMenu(),
     ];
   }
 
   Expanded _buildCountrySearchView() {
     return Expanded(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: TextField(
-            controller: textEditingController,
-            onChanged: (onChangedValue) {
-              print("onChangedVlaue =>" + onChangedValue.toString());
-              print("HERE =>" + newCountriesFilteredList.toString());
-              setState(() {
-                var list = newCountriesList
-                    .where((country) => country['country']
-                        .toLowerCase()
-                        .contains(onChangedValue))
-                    .toList();
-                print("Filtered LIst =>" + list.toString());
-                newCountriesFilteredList = list;
-              });
-            },
-            decoration: InputDecoration(
-              hintText: 'Type Country Name',
-              icon: Icon(
-                Icons.search,
-                color: Colors.black87,
-              ),
-              border: InputBorder.none,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: TextField(
+          controller: textEditingController,
+          onChanged: (onChangedValue) {
+            print("onChangedVlaue =>" + onChangedValue.toString());
+            print("HERE =>" + newCountriesFilteredList.toString());
+            setState(() {
+              var list = newCountriesList
+                  .where((country) => country.getCountryName
+                      .toLowerCase()
+                      .contains(onChangedValue))
+                  .toList();
+              print("Filtered LIst =>" + list.toString());
+              newCountriesFilteredList = list;
+            });
+          },
+          decoration: InputDecoration(
+            hintText: 'Type Country Name',
+            icon: Icon(
+              Icons.search,
+              color: Colors.black87,
             ),
+            border: InputBorder.none,
           ),
         ),
-      );
+      ),
+    );
   }
 
   GestureDetector _buildOptionMenu() {
@@ -260,68 +257,80 @@ class _CountryListPageState extends State<CountryListPage> {
   Widget _getAllCountries() {
     return Expanded(
       child: _isLoading
-          ? Center(child: CircularProgressIndicator(),)
-          : newCountriesFilteredList.length==0 ? ErrorPlaceholder(errorMsg: 'No data found.', iconData: Icons.warning)
-          : ListView.builder(
-              shrinkWrap: true,
-              itemCount: newCountriesFilteredList.length,
-              itemBuilder: (context, index) {
-                return CountryListTile(
-                    country: CountryDTO(
-                  countryName: newCountriesFilteredList[index]['country'],
-                  active: _selectedStats == SelectedStats.TOTAL
-                      ? newCountriesFilteredList[index]['active'].toString()
-                      : newCountriesFilteredList[index]['todayCases']
-                          .toString(),
-                  deaths: _selectedStats == SelectedStats.TOTAL
-                      ? newCountriesFilteredList[index]['deaths'].toString()
-                      : newCountriesFilteredList[index]['todayDeaths']
-                          .toString(),
-                  recovered: _selectedStats == SelectedStats.TOTAL
-                      ? newCountriesFilteredList[index]['recovered'].toString()
-                      : 'No Data',
-                  imageUrl: newCountriesFilteredList[index]['countryInfo']
-                      ['flag'],
-                ));
-              }),
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : newCountriesFilteredList.length == 0
+              ? ErrorPlaceholder(
+                  errorMsg: 'No data found.', iconData: Icons.warning)
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: newCountriesFilteredList.length,
+                  itemBuilder: (context, index) {
+                    return CountryListTile(
+                        country: CountryDTO(
+                      countryName:
+                          newCountriesFilteredList[index].getCountryName,
+                      active: _selectedStats == SelectedStats.TOTAL
+                          ? newCountriesFilteredList[index].getActive
+                          : newCountriesFilteredList[index]
+                              .getTodayCases
+                              .toString(),
+                      deaths: _selectedStats == SelectedStats.TOTAL
+                          ? newCountriesFilteredList[index].getDeaths
+                          : newCountriesFilteredList[index]
+                              .getTodayDeaths
+                              .toString(),
+                      recovered: _selectedStats == SelectedStats.TOTAL
+                          ? newCountriesFilteredList[index].getRecovered
+                          : 'No Data',
+                      imageUrl: newCountriesFilteredList[index].getImageUrl,
+                    ));
+                  }),
     );
   }
 
   Widget _getCountryByArea() {
     newCountriesFilteredList = newCountriesFilteredList
-        .where((country) => country['country'] == widget.countryName)
+        .where((country) => country.getCountryName == widget.countryName)
         .toList();
     return Expanded(
-      child:  _isLoading
-          ? Center(child: CircularProgressIndicator(),)
-          : newCountriesFilteredList.length==0 ? ErrorPlaceholder(errorMsg: 'No data found',iconData: Icons.warning,)
-           : ListView.builder(
-              shrinkWrap: true,
-              itemCount: newCountriesFilteredList.length,
-              itemBuilder: (context, index) {
-                return CountryListTile(
-                    country: CountryDTO(
-                  countryName: newCountriesFilteredList[index]['country'],
-                  active: _selectedStats == SelectedStats.TOTAL
-                      ? newCountriesFilteredList[index]['active'].toString()
-                      : newCountriesFilteredList[index]['todayCases']
-                          .toString(),
-                  deaths: _selectedStats == SelectedStats.TOTAL
-                      ? newCountriesFilteredList[index]['deaths'].toString()
-                      : newCountriesFilteredList[index]['todayDeaths']
-                          .toString(),
-                  recovered: _selectedStats == SelectedStats.TOTAL
-                      ? newCountriesFilteredList[index]['recovered'].toString()
-                      : 'No Data',
-                  imageUrl: newCountriesFilteredList[index]['countryInfo']
-                      ['flag'],
-                ));
-              }),
+      child: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : newCountriesFilteredList.length == 0
+              ? ErrorPlaceholder(
+                  errorMsg: 'No data found',
+                  iconData: Icons.warning,
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: newCountriesFilteredList.length,
+                  itemBuilder: (context, index) {
+                    return CountryListTile(
+                        country: CountryDTO(
+                      countryName:
+                          newCountriesFilteredList[index].getCountryName,
+                      active: _selectedStats == SelectedStats.TOTAL
+                          ? newCountriesFilteredList[index].getActive
+                          : newCountriesFilteredList[index]
+                              .getTodayCases
+                              .toString(),
+                      deaths: _selectedStats == SelectedStats.TOTAL
+                          ? newCountriesFilteredList[index].getDeaths
+                          : newCountriesFilteredList[index]
+                              .getTodayDeaths
+                              .toString(),
+                      recovered: _selectedStats == SelectedStats.TOTAL
+                          ? newCountriesFilteredList[index].getRecovered
+                          : 'No Data',
+                      imageUrl: newCountriesFilteredList[index].getImageUrl,
+                    ));
+                  }),
     );
   }
 }
-
-
 
 Container _buildColorInfoItem(
     {@required Color textColor, @required String title}) {

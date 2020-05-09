@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:covid19_tracker/constants/mystyles.dart';
 import 'package:covid19_tracker/data/newsDTO.dart';
+import 'package:covid19_tracker/services/apiservice.dart';
+import 'package:covid19_tracker/services/apiserviceimpl.dart';
 import 'package:covid19_tracker/ui/common_widgets/errorplaceholder.dart';
 import 'package:covid19_tracker/ui/screens/news/news_list_tile.dart';
 import 'package:covid19_tracker/ui/screens/news_detail/news_detail.dart';
@@ -23,7 +25,7 @@ class _NewsPageState extends State<NewsPage> {
   bool isLoading = true;
   bool isLastPageReached = false;
   ScrollController _scrollController = ScrollController();
-  List listOfNews = [];
+  List<NewsDTO> listOfNews = [];
 
   @override
   void initState() {
@@ -34,13 +36,35 @@ class _NewsPageState extends State<NewsPage> {
         if (!isLastPageReached) {
           print("PAGINATION TRIGGERED");
           _pageNumber += 1;
-          fetchNewsForToday();
+          _fetchNewsForToday();
           return;
         }
         print('======================LAST PAGE REACHED=====================');
       }
     });
-    fetchNewsForToday();
+  _fetchNewsForToday();
+  }
+
+  _fetchNewsForToday() async{
+    try{
+      ApiService apiService = ApiServiceImpl();
+      List<NewsDTO> result = await apiService.fetchNews(_pageNumber);
+      if(!mounted)return;
+      setState(() {
+        listOfNews.addAll(result);
+      });
+    }catch(e){
+      if(!mounted)return;
+      setState(() {
+        isLastPageReached = true;
+      });
+      print('FETCH NEWS ERRROR================>$e');
+    }finally{
+      if(!mounted)return;
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -97,6 +121,7 @@ class _NewsPageState extends State<NewsPage> {
     );
   }
 
+/*
   fetchNewsForToday() async {
     print('check page number $_pageNumber');
     String url =
@@ -122,12 +147,15 @@ class _NewsPageState extends State<NewsPage> {
     } catch (exception) {
       print('EXCEPTIONNNNNNNNNNNNNNNNNNN' + exception.toString());
     }
-    /* finally {
+    */
+/* finally {
                 setState(() {
                   isLoading = false;
                 });
-              } */
+              } *//*
+
   }
+*/
 
   Widget _buildNewsListView() {
     return ListView.builder(
