@@ -7,11 +7,7 @@ import 'package:covid19_tracker/ui/common_widgets/errorplaceholder.dart';
 import 'package:covid19_tracker/ui/screens/news/news_list_tile.dart';
 import 'package:covid19_tracker/ui/screens/news_detail/news_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
-const NEWS_API_ORG_API_KEY = 'f710c74edd924727b90828d54f639bb8';
-const PAGE_SIZE = 20;
 
 class NewsPage extends StatefulWidget {
   @override

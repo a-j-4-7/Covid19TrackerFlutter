@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:covid19_tracker/constants/mycolors.dart';
 import 'package:covid19_tracker/constants/mystyles.dart';
 import 'package:covid19_tracker/data/countryDTO.dart';
@@ -8,12 +7,9 @@ import 'package:covid19_tracker/ui/common_widgets/errorplaceholder.dart';
 import 'package:covid19_tracker/ui/screens/countrylist/countrylisttile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'mytogglebutton.dart';
 
 enum SelectedStats { TODAY, TOTAL }
-
-const COUNTRIES_API_URL = 'https://corona.lmao.ninja/v2/countries?sort=cases';
 
 class CountryListPage extends StatefulWidget {
   final String countryName;

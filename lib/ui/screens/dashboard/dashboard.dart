@@ -13,10 +13,8 @@ import 'package:covid19_tracker/ui/screens/dashboard/symptomslist.dart';
 import 'package:covid19_tracker/ui/screens/dashboard/worldwidecountgridview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:charts_flutter/flutter.dart' as charts;
 
-const WORLDWIDE_COUNT_API_URL = 'https://corona.lmao.ninja/v2/all';
 
 class DashboardPage extends StatefulWidget {
   final Function(String) onAreaSelectedCallback;
@@ -29,7 +27,8 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  WorldwideCount _worldwideCount;
+  Future<WorldwideCount> _worldwideCountFuture;
+
   @override
   void initState() {
     _fetchWorldwideCount();
@@ -37,16 +36,8 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   _fetchWorldwideCount() async {
-    ApiService apiService = ApiServiceImpl();
-    try {
-      final worldwideCount = await apiService.fetchWorldwideCount();
-      if(!mounted)return;
-      setState(() {
-        _worldwideCount = worldwideCount;
-      });
-    } catch (e) {
-      print('CATCHED ERROR =====> $e');
-    }
+    final ApiService apiService = ApiServiceImpl();
+    _worldwideCountFuture = apiService.fetchWorldwideCount();
   }
 
   @override
@@ -75,7 +66,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   height: 24,
                 ),
                 _buildSectionTitle('Worldwide Counter'),
-                if (_worldwideCount != null) _buildWorldwideStatsPieChart(),
                 _buildWorldwideCounterGrid(),
                 _buildSectionTitle('Symptoms'),
                 _buildSymptomsLayout(),
@@ -149,27 +139,56 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildWorldwideCounterGrid() {
-    return WorldwideCountGridView(
-        activeCases: _worldwideCount != null
-            ? _worldwideCount.getTotalActiveCasesCount
-            : 0,
-        deaths:
-            _worldwideCount != null ? _worldwideCount.getTotalDeathCount : 0,
-        recoveredCases:
-            _worldwideCount != null ? _worldwideCount.getTotalRecoverdCount : 0,
-        totalCases: _worldwideCount != null
-            ? _worldwideCount.getTotalConfirmedCasesCount
-            : 0);
+    return FutureBuilder<WorldwideCount>(
+      future: _worldwideCountFuture,
+      // ignore: missing_return
+      builder: (_, AsyncSnapshot<WorldwideCount> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            if (snapshot.hasError)
+              return WorldwideCountGridView(
+                activeCases: 0,
+                deaths: 0,
+                recoveredCases: 0,
+                totalCases: 0,
+              );
+            if (snapshot.hasData) {
+              WorldwideCount worldwideCount = snapshot.data;
+              return Column(
+                children: <Widget>[
+                  _buildWorldwideStatsPieChart(worldwideCount),
+                  WorldwideCountGridView(
+                      activeCases: worldwideCount.getTotalActiveCasesCount,
+                      deaths: worldwideCount.getTotalDeathCount,
+                      recoveredCases: worldwideCount.getTotalRecoverdCount,
+                      totalCases: worldwideCount.getTotalConfirmedCasesCount),
+                ],
+              );
+            }
+            break;
+          default:
+            return WorldwideCountGridView(
+              activeCases: 0,
+              deaths: 0,
+              recoveredCases: 0,
+              totalCases: 0,
+            );
+            break;
+        }
+      },
+    );
   }
 
-  Widget _buildWorldwideStatsPieChart() {
+  Widget _buildWorldwideStatsPieChart(WorldwideCount worldwideCount) {
     return Container(
-      margin: EdgeInsets.only(top: 16,),
+      margin: EdgeInsets.only(
+        top: 16,
+      ),
       height: 220,
       child: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: charts.PieChart(_buildPieChartSeriesList(_worldwideCount),
+            child: charts.PieChart(_buildPieChartSeriesList(worldwideCount),
                 animate: true,
                 defaultRenderer: new charts.ArcRendererConfig(
                   arcRendererDecorators: [
@@ -183,18 +202,18 @@ class _DashboardPageState extends State<DashboardPage> {
           Align(
             alignment: Alignment.center,
             child: Container(
-              height: 50,width: 50,
+              height: 50,
+              width: 50,
               decoration: MyStyles.myBoxD(),
             ),
           )
         ],
       ),
     );
-
-
   }
 
-  List<charts.Series<WorldwideStatsPieChartModel, String>> _buildPieChartSeriesList(WorldwideCount dashboardCount) {
+  List<charts.Series<WorldwideStatsPieChartModel, String>>
+      _buildPieChartSeriesList(WorldwideCount dashboardCount) {
     final pieData = [
       WorldwideStatsPieChartModel(
           title: 'Active', number: dashboardCount.getTotalActiveCasesCount),
@@ -204,13 +223,13 @@ class _DashboardPageState extends State<DashboardPage> {
           title: 'Recovered', number: dashboardCount.getTotalRecoverdCount),
     ];
 
-   return [
+    return [
       charts.Series<WorldwideStatsPieChartModel, String>(
         id: 'Global Stats',
         domainFn: (WorldwideStatsPieChartModel index, _) => index.title,
         measureFn: (WorldwideStatsPieChartModel index, _) => index.number,
         labelAccessorFn: (WorldwideStatsPieChartModel index, _) =>
-        '${index.title}',
+            '${index.title}',
         // colorFn: (WorldwideStatsPieChartModel index, _)=> {
         //   return
         // },
@@ -233,5 +252,4 @@ class _DashboardPageState extends State<DashboardPage> {
       )
     ];
   }
-
 }
