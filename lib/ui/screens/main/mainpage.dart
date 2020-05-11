@@ -1,8 +1,8 @@
 import 'package:covid19_tracker/constants/mycolors.dart';
-import 'package:covid19_tracker/screens/about/aboutpage.dart';
-import 'package:covid19_tracker/screens/countrylist/countrylist.dart';
-import 'package:covid19_tracker/screens/dashboard/dashboard.dart';
-import 'package:covid19_tracker/screens/news/news.dart';
+import 'package:covid19_tracker/ui/screens/about/aboutpage.dart';
+import 'package:covid19_tracker/ui/screens/countrylist/countrylist.dart';
+import 'package:covid19_tracker/ui/screens/dashboard/dashboard.dart';
+import 'package:covid19_tracker/ui/screens/news/news.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
