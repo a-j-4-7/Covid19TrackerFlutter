@@ -2,20 +2,27 @@ import 'package:covid19_tracker/ui/screens/dashboard/worlwidecountgridtile.dart'
 import 'package:flutter/material.dart';
 
 class WorldwideCountGridView extends StatelessWidget {
-
   final int totalCases;
   final int activeCases;
   final int deaths;
   final int recoveredCases;
+  final int todayCases;
+  final int todayDeaths;
 
-  const WorldwideCountGridView({Key key,
+  const WorldwideCountGridView({
+    Key key,
     @required this.totalCases,
     @required this.activeCases,
     @required this.deaths,
-    @required this.recoveredCases}) : super(key: key);
+    @required this.recoveredCases,
+    @required this.todayCases,
+    @required this.todayDeaths,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(this.todayCases);
+    print(this.todayDeaths);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 24,
@@ -31,25 +38,27 @@ class WorldwideCountGridView extends StatelessWidget {
         shrinkWrap: true,
         children: <Widget>[
           WorldwideCountGridTile(
-            number: totalCases,
+            totalNumber: totalCases,
+            todaysNumber: todayCases,
             title: 'CONFIRMED',
             textColor: Colors.indigo,
             bgColor: Colors.indigo.shade200,
           ),
           WorldwideCountGridTile(
-            number: activeCases,
+            totalNumber: activeCases,
             title: 'ACTIVE CASES',
             textColor: Colors.yellow[800],
             bgColor: Colors.yellow.shade300,
           ),
           WorldwideCountGridTile(
-            number: recoveredCases,
+            totalNumber: recoveredCases,
             title: 'RECOVERED',
             textColor: Colors.green,
             bgColor: Colors.green.shade200,
           ),
           WorldwideCountGridTile(
-            number: deaths,
+            totalNumber: deaths,
+            todaysNumber: todayDeaths,
             title: 'DEATHS',
             textColor: Colors.red[600],
             bgColor: Colors.red.shade200,

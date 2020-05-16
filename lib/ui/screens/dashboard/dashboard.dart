@@ -15,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-
 class DashboardPage extends StatefulWidget {
   final Function(String) onAreaSelectedCallback;
 
@@ -151,6 +150,8 @@ class _DashboardPageState extends State<DashboardPage> {
                 deaths: 0,
                 recoveredCases: 0,
                 totalCases: 0,
+                todayCases: 0,
+                todayDeaths: 0,
               );
             if (snapshot.hasData) {
               WorldwideCount worldwideCount = snapshot.data;
@@ -158,10 +159,13 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: <Widget>[
                   _buildWorldwideStatsPieChart(worldwideCount),
                   WorldwideCountGridView(
-                      activeCases: worldwideCount.getTotalActiveCasesCount,
-                      deaths: worldwideCount.getTotalDeathCount,
-                      recoveredCases: worldwideCount.getTotalRecoverdCount,
-                      totalCases: worldwideCount.getTotalConfirmedCasesCount),
+                    activeCases: worldwideCount.getTotalActiveCasesCount,
+                    deaths: worldwideCount.getTotalDeathCount,
+                    recoveredCases: worldwideCount.getTotalRecoverdCount,
+                    totalCases: worldwideCount.getTotalConfirmedCasesCount,
+                    todayCases: worldwideCount.getTodayCases,
+                    todayDeaths: worldwideCount.getTodayDeaths,
+                  ),
                 ],
               );
             }
@@ -172,6 +176,8 @@ class _DashboardPageState extends State<DashboardPage> {
               deaths: 0,
               recoveredCases: 0,
               totalCases: 0,
+              todayCases: 0,
+              todayDeaths: 0,
             );
             break;
         }

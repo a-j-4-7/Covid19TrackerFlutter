@@ -6,6 +6,8 @@ class WorldwideCount {
   final int totalRecoveredCasesCount;
   final int totalActiveCasesCount;
   final int totalConfirmedCasesCount;
+  final int todayCases;
+  final int todayDeaths;
   final Color color;
 
   int get getTotalDeathCount => totalDeathCount;
@@ -16,6 +18,10 @@ class WorldwideCount {
 
   int get getTotalConfirmedCasesCount => totalConfirmedCasesCount;
 
+  int get getTodayCases => todayCases;
+
+  int get getTodayDeaths => todayDeaths;
+
   Color get getColor => color;
 
   WorldwideCount(
@@ -23,6 +29,8 @@ class WorldwideCount {
       @required this.totalRecoveredCasesCount,
       @required this.totalActiveCasesCount,
       @required this.totalConfirmedCasesCount,
+      this.todayCases,
+      this.todayDeaths,
       this.color});
 
   @override
@@ -36,6 +44,8 @@ class WorldwideCount {
       totalRecoveredCasesCount: json['recovered'],
       totalActiveCasesCount: json['active'],
       totalConfirmedCasesCount: json['cases'],
+      todayCases: json['todayCases'],
+      todayDeaths: json['todayDeaths'],
     );
   }
 }

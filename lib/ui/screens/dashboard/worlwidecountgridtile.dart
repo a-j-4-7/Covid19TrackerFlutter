@@ -1,18 +1,20 @@
 import 'package:covid19_tracker/constants/mystyles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WorldwideCountGridTile extends StatelessWidget {
   final String title;
-  final int number;
+  final int totalNumber;
+  final int todaysNumber;
   final Color textColor;
   final Color bgColor;
 
   const WorldwideCountGridTile(
       {Key key,
       @required this.title,
-      @required this.number,
+      @required this.totalNumber,
+      this.todaysNumber,
       @required this.textColor,
       @required this.bgColor})
       : super(key: key);
@@ -58,21 +60,36 @@ class WorldwideCountGridTile extends StatelessWidget {
                 height: 4,
               ),
               Text(
-                number.toString(),
+                totalNumber.toString(),
                 style: MyStyles.headerTextStyle
                     .copyWith(color: textColor, fontSize: 30),
               ),
             ],
           ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Icon(
-              Icons.trending_up,
-              color: Colors.white,
-              size: 48,
-            ),
-          )
+          if (todaysNumber != null && todaysNumber != 0)
+            Positioned(
+                bottom: 0,
+                right: 0,
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.trending_up,
+                      color: textColor,
+                      size: 14,
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      todaysNumber.toString(),
+                      style: GoogleFonts.montserrat(
+                        color: textColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                )),
         ],
       ),
     );
