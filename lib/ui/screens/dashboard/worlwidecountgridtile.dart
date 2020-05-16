@@ -72,21 +72,21 @@ class WorldwideCountGridTile extends StatelessWidget {
                 right: 0,
                 child: Row(
                   children: <Widget>[
-                    Icon(
-                      Icons.trending_up,
-                      color: textColor,
-                      size: 14,
+                    Text(
+                      '+ ${todaysNumber.toString()}',
+                      style: GoogleFonts.montserrat(
+                        color: textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     SizedBox(
                       width: 4,
                     ),
-                    Text(
-                      todaysNumber.toString(),
-                      style: GoogleFonts.montserrat(
-                        color: textColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    Icon(
+                      Icons.arrow_upward,
+                      color: textColor,
+                      size: 16,
                     ),
                   ],
                 )),

@@ -21,8 +21,6 @@ class WorldwideCountGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.todayCases);
-    print(this.todayDeaths);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 24,
